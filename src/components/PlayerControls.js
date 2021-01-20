@@ -7,7 +7,7 @@ import {
   faBackward,
   faForward,
 } from "@fortawesome/free-solid-svg-icons";
-
+ 
 const PlayerControls = ({
   currentSong,
   setCurrentSong,
@@ -19,22 +19,20 @@ const PlayerControls = ({
   songTimeInfo,
   setSongTimeInfo,
 }) => {
-  // functions
-
-  // plays/pauses audio element in app component
+  const dragHandler = (e) => {
+    audioRef.current.currentTime = e.target.value;
+    setSongTimeInfo({ ...songTimeInfo, currentTime: e.target.value });
+  };
   const playHandler = () => {
     isSongPlaying === true ? audioRef.current.pause() : audioRef.current.play();
     setIsSongPlaying(!isSongPlaying);
   };
-
-  // formats currentTime and duration properties of audioRef
   const getTime = (time) => {
     return (
       Math.floor(time / 60) + ":" + ("0" + Math.floor(time % 60)).slice(-2)
     );
   };
-
-  // changes the song depending on which direction is clicked
+ 
   const changeSongHandler = (direction) => {
     const index = songs.indexOf(currentSong);
     if (direction === 'previous') {
@@ -45,12 +43,13 @@ const PlayerControls = ({
       else setCurrentSong(songs[index + 1]);
     }
   };
-
-  // changes currentTime value as the input range is changed
-  const dragHandler = (e) => {
-    audioRef.current.currentTime = e.target.value;
-    setSongTimeInfo({ ...songTimeInfo, currentTime: e.target.value });
-  };
+ 
+  const nextSongHandler = () => {
+    if (songTimeInfo.currentTime === songTimeInfo.duration) {
+      console.log(songTimeInfo.current);
+      changeSongHandler('next');
+    }
+  }
   return (
     <div className="controls__div">
       <div className="song__control">
@@ -61,14 +60,14 @@ const PlayerControls = ({
           max={songTimeInfo.duration || 0}
           value={songTimeInfo.currentTime}
           onChange={dragHandler}
-          onTimeUpdate={changeSongHandler}
+          onTimeUpdate={nextSongHandler}
         />
         <p>{getTime(songTimeInfo.duration)}</p>
       </div>
       <div className="player__control">
         <FontAwesomeIcon
           className="previous"
-          onClick={changeSongHandler}
+          onClick={() => changeSongHandler("previous")}
           icon={faBackward}
         />
         <FontAwesomeIcon
@@ -78,12 +77,12 @@ const PlayerControls = ({
         />
         <FontAwesomeIcon
           className="next"
-          onClick={changeSongHandler}
+          onClick={() => changeSongHandler("next")}
           icon={faForward}
         />
       </div>
     </div>
   );
 };
-
+ 
 export default PlayerControls;

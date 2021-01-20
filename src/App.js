@@ -21,7 +21,7 @@ const App = () => {
   });
 
   // functions 
-  
+
   // updates the time value of the current song
   const updateTimeInfo = (e) => {
     setSongTimeInfo({
@@ -31,7 +31,7 @@ const App = () => {
   };
 
   // reference
-  const audioRef = null;
+  const audioRef = useRef(null);
 
   return (
     <div>
