@@ -34,8 +34,23 @@ const PlayerControls = ({
     );
   };
 
-  // const changeSongHandler = () => {};
-  // const dragHandler = () => {};
+  // changes the song depending on which direction is clicked
+  const changeSongHandler = (direction) => {
+    const index = songs.indexOf(currentSong);
+    if (direction === 'previous') {
+      if (index === 0) setCurrentSong(songs[songs.length - 1]);
+      else setCurrentSong(songs[index - 1]);
+    } else {
+      if (index === songs.length - 1) setCurrentSong(songs[0]);
+      else setCurrentSong(songs[index + 1]);
+    }
+  };
+
+  // changes currentTime value as the input range is changed
+  const dragHandler = (e) => {
+    audioRef.current.currentTime = e.target.value;
+    setSongTimeInfo({ ...songTimeInfo, currentTime: e.target.value });
+  };
   return (
     <div className="controls__div">
       <div className="song__control">
@@ -45,15 +60,15 @@ const PlayerControls = ({
           min={0}
           max={songTimeInfo.duration || 0}
           value={songTimeInfo.currentTime}
-          // onChange={dragHandler}
-          // onTimeUpdate={changeSongHandler}
+          onChange={dragHandler}
+          onTimeUpdate={changeSongHandler}
         />
         <p>{getTime(songTimeInfo.duration)}</p>
       </div>
       <div className="player__control">
         <FontAwesomeIcon
           className="previous"
-          // onClick={changeSongHandler}
+          onClick={changeSongHandler}
           icon={faBackward}
         />
         <FontAwesomeIcon
@@ -63,7 +78,7 @@ const PlayerControls = ({
         />
         <FontAwesomeIcon
           className="next"
-          // onClick={changeSongHandler}
+          onClick={changeSongHandler}
           icon={faForward}
         />
       </div>
